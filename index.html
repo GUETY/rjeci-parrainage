@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Badge Officiel - RJECI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #f37021;
+            --primary-dark: #d55d14;
+            --gold: #d4af37;
+            --dark: #0f172a;
+            --dark-card: #1e293b;
+            --light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+            background: var(--dark-card);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            min-width: 0;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 5px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        input[type="text"] {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(243, 112, 33, 0.2);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            background: #0f172a;
+            padding: 30px 20px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(243, 112, 33, 0.1);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: translateY(-3px);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .upload-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+
+        .upload-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .resolution-warning {
+            display: none;
+            font-size: 0.8rem;
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            line-height: 1.4;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--primary) 0%, #e65c00 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px -5px rgba(243, 112, 33, 0.4);
+            margin-top: auto;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(243, 112, 33, 0.5);
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+        }
+
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-width: 0;
+            width: 100%;
+        }
+
+        #preview-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            background: #0b0f19;
+        }
+
+        /* ================= THE POSTER ================= */
+        #poster-card {
+            width: 600px;
+            height: 600px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            background:
+                radial-gradient(circle at 85% 10%, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0) 45%),
+                radial-gradient(circle at 10% 90%, rgba(243, 112, 33, 0.35) 0%, rgba(243, 112, 33, 0) 55%),
+                linear-gradient(150deg, #0f172a 0%, #1e293b 45%, #7a2e06 100%);
+        }
+
+        .watermark-crest {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            font-size: 220px;
+            font-weight: 900;
+            font-family: 'Playfair Display', serif;
+            color: rgba(255,255,255,0.05);
+            line-height: 1;
+            z-index: 1;
+            user-select: none;
+        }
+
+        .poster-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Header row */
+        .poster-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 26px 30px 0;
+        }
+
+        .brand-block .brand-name {
+            color: #fff;
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-block .brand-sub {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .poster-hashline {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: right;
+            max-width: 160px;
+        }
+
+        /* Main split: photo left, text right */
+        .poster-main {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            padding: 10px 30px 0 62px;
+            gap: 22px;
+        }
+
+        /* Polaroid photo frame */
+        .polaroid {
+            background: #fff;
+            padding: 14px 14px 20px;
+            border-radius: 4px;
+            box-shadow: 0 18px 35px rgba(0,0,0,0.35);
+            transform: rotate(-3deg);
+            width: 235px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .crown-icon {
+            position: absolute;
+            top: -34px;
+            left: 38px;
+            width: 60px;
+            height: 44px;
+            color: #fff;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+            transform: rotate(-3deg);
+            z-index: 5;
+        }
+
+        .avatar-frame {
+            width: 100%;
+            height: 235px;
+            border-radius: 2px;
+            overflow: hidden;
+            background: #f1f5f9;
+            position: relative;
+        }
+
+        .avatar-photo {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+        }
+
+        .avatar-photo:active {
+            cursor: grabbing;
+        }
+
+        .avatar-placeholder-icon {
+            position: absolute;
+            inset: 0;
+            width: 55%;
+            height: 55%;
+            margin: auto;
+            opacity: 0.5;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .avatar-placeholder-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .polaroid-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+        }
+
+        .polaroid-logo {
+            border: 1.5px solid var(--dark);
+            border-radius: 4px;
+            padding: 3px 6px;
+            font-weight: 800;
+            font-size: 0.55rem;
+            color: var(--primary-dark);
+            letter-spacing: 0.5px;
+        }
+
+        .polaroid-name {
+            color: var(--dark);
+            font-weight: 800;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            text-align: right;
+            line-height: 1.2;
+            max-width: 140px;
+        }
+
+        /* Right text column */
+        .poster-text {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .greeting-script {
+            font-family: 'Caveat', cursive;
+            font-size: 2.4rem;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .cta-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold) 0%, #f0d68a 100%);
+            color: var(--dark);
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 8px 18px;
+            border-radius: 4px;
+            width: fit-content;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+        }
+
+        .cta-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 2.5rem;
+            color: #fff;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .cta-title span {
+            color: var(--primary);
+        }
+
+        .quote-box {
+            border: 1.5px solid rgba(255,255,255,0.35);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #f1f5f9;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            font-weight: 500;
+            max-width: 300px;
+        }
+
+        .quote-box b {
+            color: var(--gold);
+        }
+
+        .contact-block {
+            margin-top: 6px;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.78rem;
+        }
+
+        .contact-block .contact-phone {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-top: 2px;
+        }
+
+        .social-tag {
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.95);
+            color: var(--dark);
+            font-weight: 800;
+            font-size: 0.78rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+
+        /* Greek key footer strip */
+        .poster-footer-pattern {
+            height: 34px;
+            width: 100%;
+            background-color: #7a2e06;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='34' viewBox='0 0 40 34'%3E%3Cpath d='M2 4 H14 V14 H24 V4 H36 V30 H14 V20 H2 Z' fill='none' stroke='%23f37021' stroke-width='3'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            background-position: left center;
+        }
+
+        .app-container-footer-note {
+            margin-top: 18px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        @media (max-width: 968px) {
+            .app-container {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 30px;
+                padding: 20px;
+            }
+            body {
+                padding: 20px 10px;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 8px;
+            }
+            header {
+                margin-bottom: 24px;
+            }
+            header h1 {
+                font-size: 1.5rem;
+            }
+            header p {
+                font-size: 0.92rem;
+            }
+            .app-container {
+                padding: 14px;
+                border-radius: 16px;
+                gap: 22px;
+            }
+            .section-title {
+                font-size: 1.1rem;
+            }
+            #preview-container {
+                border-radius: 12px;
+            }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Générateur de Badge de Parrainage</h1>
+        <p>Valorise ton engagement au sein du Rassemblement des Jeunes Élites de Côte d'Ivoire. Ajoute ta photo et ton nom, télécharge ton affiche et partage-la fièrement dans tes statuts WhatsApp !</p>
+    </header>
+
+    <div class="app-container">
+
+        <!-- Controls (Left Panel) -->
+        <div class="controls-panel">
+            <h2 class="section-title">Personnalise ton badge</h2>
+
+            <div class="form-group">
+                <label for="input-name">Ton Prénom et Nom</label>
+                <input type="text" id="input-name" placeholder="Ex: Lis Derine Guety" value="Lis Derine Guety">
+            </div>
+
+            <div class="form-group">
+                <label>Ta Photo de Profil</label>
+                <div class="upload-area" id="drop-zone">
+                    <div class="upload-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </div>
+                    <span class="upload-text">Glisse ta photo ici ou clique pour parcourir</span>
+                    <span class="upload-hint">Format recommandé : Carré, PNG ou JPG de bonne qualité</span>
+                    <input type="file" id="file-input" accept="image/*">
+                </div>
+                <span class="upload-hint">💡 Astuce : une fois ta photo importée, fais-la glisser directement dans l'aperçu pour la recentrer.</span>
+                <span class="resolution-warning" id="resolution-warning">⚠️ Cette photo est en basse résolution : elle risque d'apparaître floue ou pixelisée sur l'affiche téléchargée. Utilise une photo d'au moins 700×700 px pour un rendu net.</span>
+            </div>
+
+            <button class="btn-download" id="download-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Télécharger mon affiche
+            </button>
+        </div>
+
+        <!-- Live Preview (Right Panel) -->
+        <div class="preview-panel">
+            <h2 class="section-title" style="margin-bottom: 20px; align-self: flex-start;">Aperçu en direct</h2>
+
+            <div id="preview-container">
+                <div id="poster-card">
+                    <div class="watermark-crest">R</div>
+
+                    <div class="poster-content">
+                        <div class="poster-topbar">
+                            <div class="brand-block">
+                                <div class="brand-name">RJECI</div>
+                                <div class="brand-sub">Parrainage</div>
+                            </div>
+                            <div class="poster-hashline">#BâtirLavenirEnsemble</div>
+                        </div>
+
+                        <div class="poster-main">
+                            <div class="polaroid">
+                                <svg class="crown-icon" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 40 L2 14 L16 24 L30 4 L44 24 L58 14 L56 40 Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round" fill="none"/>
+                                </svg>
+                                <div class="avatar-frame" id="avatar-frame">
+                                    <div class="avatar-photo" id="avatar-photo"></div>
+                                    <div class="avatar-placeholder-icon" id="avatar-placeholder">
+                                        <svg viewBox="0 0 24 24" fill="#94a3b8"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                    </div>
+                                </div>
+                                <div class="polaroid-footer">
+                                    <div class="polaroid-logo">RJECI</div>
+                                    <div class="polaroid-name" id="badge-name">Lis Derine<br>Guety</div>
+                                </div>
+                            </div>
+
+                            <div class="poster-text">
+                                <div class="greeting-script">Hey !!</div>
+                                <div class="cta-badge">C'est lancé</div>
+                                <div class="cta-title">Parrai<span>nage</span></div>
+                                <div class="quote-box">
+                                    « Je parraine pour l'avenir de notre jeunesse au <b>RJECI</b>. Ensemble, bâtissons la relève ! »
+                                </div>
+                                <div class="contact-block">
+                                    Rejoins-nous au :
+                                    <div class="contact-phone">07 13 59 53 44</div>
+                                </div>
+                                <div class="social-tag">f RJECI Officiel · rje-ci.org</div>
+                            </div>
+                        </div>
+
+                        <div class="poster-footer-pattern"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        const inputName = document.getElementById('input-name');
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        const avatarFrame = document.getElementById('avatar-frame');
+        const avatarPhoto = document.getElementById('avatar-photo');
+        const avatarPlaceholder = document.getElementById('avatar-placeholder');
+        const resolutionWarning = document.getElementById('resolution-warning');
+        const badgeName = document.getElementById('badge-name');
+        const downloadBtn = document.getElementById('download-btn');
+        const posterCard = document.getElementById('poster-card');
+        const previewContainer = document.getElementById('preview-container');
+
+        inputName.addEventListener('input', (e) => {
+            const value = e.target.value.trim() || 'Votre Nom Ici';
+            badgeName.innerHTML = value.replace(/\s+/g, '<br>');
+        });
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        ['dragleave', 'drop'].forEach(event => {
+            dropZone.addEventListener(event, () => dropZone.classList.remove('dragover'));
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if (files.length) handleFile(files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        });
+
+        const MIN_PHOTO_SIZE = 700; // px, below this the exported badge will look soft/pixelated
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Veuillez sélectionner un fichier image valide.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                const probe = new Image();
+                probe.onload = () => {
+                    if (probe.naturalWidth < MIN_PHOTO_SIZE || probe.naturalHeight < MIN_PHOTO_SIZE) {
+                        resolutionWarning.style.display = 'block';
+                    } else {
+                        resolutionWarning.style.display = 'none';
+                    }
+                };
+                probe.src = dataUrl;
+
+                avatarPhoto.style.backgroundImage = `url(${dataUrl})`;
+                avatarPlaceholder.style.display = 'none';
+                hasPhoto = true;
+                setPhotoPosition(50, 50);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Drag-to-recenter: lets the user reposition an off-center photo within the crop.
+        let photoPosX = 50, photoPosY = 50;
+        let isDraggingPhoto = false;
+        let dragStart = { x: 0, y: 0 };
+        let dragStartPos = { x: 50, y: 50 };
+        let hasPhoto = false;
+
+        function setPhotoPosition(x, y) {
+            photoPosX = Math.max(0, Math.min(100, x));
+            photoPosY = Math.max(0, Math.min(100, y));
+            avatarPhoto.style.backgroundPosition = `${photoPosX}% ${photoPosY}%`;
+        }
+
+        function startPhotoDrag(clientX, clientY) {
+            if (!hasPhoto) return;
+            isDraggingPhoto = true;
+            dragStart = { x: clientX, y: clientY };
+            dragStartPos = { x: photoPosX, y: photoPosY };
+        }
+
+        function movePhotoDrag(clientX, clientY) {
+            if (!isDraggingPhoto) return;
+            const rect = avatarFrame.getBoundingClientRect();
+            const percentDx = ((clientX - dragStart.x) / rect.width) * 100;
+            const percentDy = ((clientY - dragStart.y) / rect.height) * 100;
+            setPhotoPosition(dragStartPos.x - percentDx, dragStartPos.y - percentDy);
+        }
+
+        function endPhotoDrag() {
+            isDraggingPhoto = false;
+        }
+
+        avatarPhoto.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            startPhotoDrag(e.clientX, e.clientY);
+        });
+        window.addEventListener('mousemove', (e) => movePhotoDrag(e.clientX, e.clientY));
+        window.addEventListener('mouseup', endPhotoDrag);
+
+        avatarPhoto.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            startPhotoDrag(t.clientX, t.clientY);
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (!isDraggingPhoto) return;
+            const t = e.touches[0];
+            movePhotoDrag(t.clientX, t.clientY);
+        }, { passive: true });
+        window.addEventListener('touchend', endPhotoDrag);
+
+        function adjustPreviewScale() {
+            const containerWidth = previewContainer.offsetWidth;
+            const cardWidth = 600;
+            if (containerWidth < cardWidth) {
+                const scale = containerWidth / cardWidth;
+                posterCard.style.transform = `scale(${scale})`;
+                posterCard.style.transformOrigin = 'top left';
+                previewContainer.style.height = `${cardWidth * scale}px`;
+            } else {
+                posterCard.style.transform = 'none';
+                previewContainer.style.height = `${cardWidth}px`;
+            }
+        }
+
+        window.addEventListener('resize', adjustPreviewScale);
+        window.addEventListener('load', adjustPreviewScale);
+        setTimeout(adjustPreviewScale, 100);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(adjustPreviewScale);
+        }
+        if (window.ResizeObserver) {
+            new ResizeObserver(adjustPreviewScale).observe(document.querySelector('.app-container'));
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const originalBtnContent = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<span class="spinner"></span> Génération en cours...';
+            downloadBtn.disabled = true;
+
+            setTimeout(() => {
+                html2canvas(posterCard, {
+                    scale: 4,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null,
+                    imageTimeout: 15000,
+                    logging: false
+                }).then(canvas => {
+                    const safeName = (inputName.value || 'badge')
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^a-z0-9]+/g, '-');
+
+                    const link = document.createElement('a');
+                    link.download = `rjeci-parrainage-${safeName}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+
+                    downloadBtn.innerHTML = originalBtnContent;
+                    downloadBtn.disabled = false;
+                }).catch(err => {
+                    console.error("Canvas export failed:", err);
+                    alert("Un problème est survenu lors de la création de l'image. Assurez-vous d'utiliser un navigateur récent.");
+                    downloadBtn.innerHTML = originalBtnContent;
+                    downloadBtn.disabled = false;
+                });
+            }, 300);
+        });
+    </script>
+</body>
+</html>
