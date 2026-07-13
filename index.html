@@ -395,8 +395,9 @@
             font-size: 0.72rem;
             text-transform: uppercase;
             text-align: right;
-            line-height: 1.2;
-            max-width: 140px;
+            white-space: nowrap;
+            max-width: 150px;
+            display: inline-block;
         }
 
         /* Right text column */
@@ -623,7 +624,7 @@
                                 </div>
                                 <div class="polaroid-footer">
                                     <div class="polaroid-logo">RJECI</div>
-                                    <div class="polaroid-name" id="badge-name">Lis Derine<br>Guety</div>
+                                    <div class="polaroid-name" id="badge-name">Lis Derine Guety</div>
                                 </div>
                             </div>
 
@@ -664,9 +665,22 @@
         const posterCard = document.getElementById('poster-card');
         const previewContainer = document.getElementById('preview-container');
 
+        const NAME_MAX_WIDTH = 150; // px, matches .polaroid-name max-width
+        const NAME_BASE_FONT_SIZE = 11.52; // px, matches 0.72rem at default 16px root
+
+        function fitBadgeName() {
+            let fontSize = NAME_BASE_FONT_SIZE;
+            badgeName.style.fontSize = `${fontSize}px`;
+            while (badgeName.scrollWidth > NAME_MAX_WIDTH && fontSize > 7) {
+                fontSize -= 0.5;
+                badgeName.style.fontSize = `${fontSize}px`;
+            }
+        }
+
         inputName.addEventListener('input', (e) => {
             const value = e.target.value.trim() || 'Votre Nom Ici';
-            badgeName.innerHTML = value.replace(/\s+/g, '<br>');
+            badgeName.textContent = value;
+            fitBadgeName();
         });
 
         dropZone.addEventListener('click', () => fileInput.click());
@@ -784,6 +798,7 @@
 
         window.addEventListener('resize', adjustPreviewScale);
         window.addEventListener('load', adjustPreviewScale);
+        fitBadgeName();
         setTimeout(adjustPreviewScale, 100);
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(adjustPreviewScale);
