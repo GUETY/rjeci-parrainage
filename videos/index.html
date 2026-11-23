@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envoie ta vidéo · Conférence nationale de la jeunesse</title>
+<meta name="description" content="Envoie ta vidéo pour la Conférence nationale de la jeunesse du 4 décembre 2026.">
+<meta property="og:title" content="Envoie ta vidéo · Conférence nationale de la jeunesse">
+<meta property="og:description" content="Un bouton, ta vidéo, c'est envoyé !">
+<meta name="theme-color" content="#04123a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Kaushan+Script&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#04123a;--gold:#e6c27a;--gold-2:#f0d08a;--orange:#e8690c;--orange-2:#ff8a1f;--muted:#c9d3ea}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden}
+body{
+  font-family:'Poppins',system-ui,sans-serif;color:#fff;background:var(--navy);
+  background-image:radial-gradient(ellipse 700px 480px at 0% 0%,rgba(200,69,10,.5),transparent 70%),
+                   radial-gradient(ellipse 600px 420px at 100% 0%,rgba(47,118,185,.5),transparent 70%);
+  min-height:100vh;padding:22px 16px 32px;display:flex;flex-direction:column;align-items:center
+}
+.wrap{width:100%;max-width:460px;text-align:center}
+.logos{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:16px}
+.logos img{display:block}
+.logos .rjeci{width:64px;height:64px}
+.logos .hes{width:64px;height:64px;border:2px solid var(--gold);border-radius:12px}
+.logos .anjpp{height:64px;width:auto;background:#fff;border:2px solid var(--gold);border-radius:12px;padding:4px 8px}
+.kicker{display:inline-block;max-width:100%;padding:4px 12px;border-radius:20px;background:linear-gradient(90deg,#c29241,#f0d08a,#c29241);color:#011133;font-size:.7rem;font-weight:700;letter-spacing:1.5px}
+h1{margin-top:8px;font-family:'Kaushan Script',cursive;font-weight:400;font-size:2.7rem;line-height:1.15}
+.sub{margin-top:6px;color:var(--muted);font-size:.98rem}
+.card{margin-top:22px;background:rgba(13,34,87,.75);border:1px solid rgba(230,194,122,.35);border-radius:22px;padding:22px 18px}
+input[type=text]{width:100%;min-height:50px;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(230,194,122,.45);background:#011133;color:#fff;font:inherit;font-size:1rem;text-align:center}
+input[type=text]::placeholder{color:#8f9cc0}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:62px;margin-top:14px;padding:12px 16px;border-radius:16px;border:0;font:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--orange-2),var(--orange));box-shadow:0 12px 26px -10px rgba(232,105,12,.8)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--gold-2);outline-offset:2px}
+.btn.ghost{background:transparent;border:2px solid rgba(255,255,255,.55);box-shadow:none;font-size:1rem;min-height:52px}
+#file-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.progress{display:none;margin-top:6px}
+.progress.show{display:block}
+.fname{font-size:.9rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar{margin-top:12px;height:16px;border-radius:10px;background:#011133;border:1px solid rgba(230,194,122,.4);overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffb02e,#ff7a12);transition:width .3s ease}
+.pct{margin-top:10px;font-family:'Anton',Impact,sans-serif;font-size:2.4rem;letter-spacing:1px;color:var(--gold-2)}
+.keep{margin-top:4px;font-size:.88rem;color:var(--muted)}
+.done{display:none}
+.done.show{display:block}
+.done .ok{width:74px;height:74px;margin:0 auto;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center}
+.done h2{margin-top:12px;font-size:1.4rem}
+.done p{margin-top:4px;color:var(--muted)}
+.err{display:none;margin-top:14px;padding:10px 12px;border-radius:12px;background:rgba(224,38,43,.15);border:1px solid rgba(224,38,43,.5);font-size:.92rem}
+.err.show{display:block}
+footer{margin-top:22px;text-align:center;font-size:.75rem;color:var(--muted)}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logos" aria-hidden="true">
+    <img class="rjeci" src="../jy-serai/logo-rjeci.png" alt="">
+    <img class="hes" src="../jy-serai/logo-hes.jpg" alt="">
+    <img class="anjpp" src="../jy-serai/logo-anjpp.png" alt="">
+  </div>
+  <span class="kicker">CONFÉRENCE NATIONALE DE LA JEUNESSE · 4 DÉC. 2026</span>
+  <h1>Envoie ta vidéo !</h1>
+  <p class="sub">Un bouton, ta vidéo, c'est envoyé.</p>
+
+  <div class="card">
+    <!-- 1. Choix -->
+    <div id="step-pick">
+      <label for="prenom" class="hidden">Ton prénom (facultatif)</label>
+      <input type="text" id="prenom" placeholder="Ton prénom (facultatif)" autocomplete="given-name" maxlength="40">
+      <label class="btn" for="file-input" id="pick-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg>
+        Envoyer ma vidéo
+      </label>
+      <input type="file" id="file-input" accept="video/*">
+    </div>
+
+    <!-- 2. Envoi -->
+    <div class="progress" id="step-progress" aria-live="polite">
+      <div class="fname" id="fname"></div>
+      <div class="bar"><span id="bar"></span></div>
+      <div class="pct" id="pct">0 %</div>
+      <div class="keep">Garde cette page ouverte jusqu'à la fin 🙏</div>
+    </div>
+
+    <!-- 3. Terminé -->
+    <div class="done" id="step-done" aria-live="polite">
+      <div class="ok"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
+      <h2>Merci, c'est envoyé ! 🎉</h2>
+      <p>Ta vidéo est bien arrivée.</p>
+      <button class="btn ghost" id="again-btn">Envoyer une autre vidéo</button>
+    </div>
+
+    <div class="err" id="err" role="alert"></div>
+  </div>
+  <footer>RJECI × HES × ANJPP · Vendredi 4 décembre 2026 · Université Félix Houphouët-Boigny</footer>
+</div>
+
+<script>
+(() => {
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzDTO-srlsd78hKY0b4Y1rz13g1XfCclEw11sOf9K2y7dlRaNh-XFh5_eGapnPQGUD-GA/exec';
+  const CHUNK = 8 * 1024 * 1024; // 8 Mo (multiple de 256 Ko, exigé par Google Drive)
+
+  const $ = (id) => document.getElementById(id);
+  const fileInput = $('file-input'), prenom = $('prenom');
+  const stepPick = $('step-pick'), stepProgress = $('step-progress'), stepDone = $('step-done');
+  const bar = $('bar'), pct = $('pct'), fname = $('fname'), err = $('err');
+
+  function show(step) {
+    stepPick.classList.toggle('hidden', step !== 'pick');
+    stepProgress.classList.toggle('show', step === 'progress');
+    stepDone.classList.toggle('show', step === 'done');
+  }
+  function fail(msg) {
+    err.textContent = msg; err.classList.add('show'); show('pick');
+  }
+  function setProgress(sent, total) {
+    const p = Math.min(100, Math.floor(sent / total * 100));
+    bar.style.width = p + '%'; pct.textContent = p + ' %';
+  }
+  function guessType(file) {
+    if (file.type && file.type.startsWith('video/')) return file.type;
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    return { mp4: 'video/mp4', mov: 'video/quicktime', m4v: 'video/mp4', '3gp': 'video/3gpp', webm: 'video/webm', mkv: 'video/x-matroska', avi: 'video/x-msvideo' }[ext] || '';
+  }
+
+  async function startSession(file, mimeType) {
+    const res = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ name: file.name, size: file.size, mimeType, prenom: prenom.value.trim() })
+    });
+    const data = await res.json();
+    if (!data.ok || !data.uploadUrl) throw new Error(data.error || 'session');
+    return data.uploadUrl;
+  }
+
+  function putChunk(url, file, start, end, mimeType) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', url);
+      xhr.setRequestHeader('Content-Range', `bytes ${start}-${end - 1}/${file.size}`);
+      xhr.upload.onprogress = (e) => { if (e.lengthComputable) setProgress(start + e.loaded, file.size); };
+      xhr.onload = () => {
+        if (xhr.status === 200 || xhr.status === 201) resolve('done');
+        else if (xhr.status === 308) resolve('next');
+        else reject(new Error('HTTP ' + xhr.status));
+      };
+      xhr.onerror = () => reject(new Error('réseau'));
+      xhr.send(file.slice(start, end, mimeType));
+    });
+  }
+
+  async function upload(file) {
+    const mimeType = guessType(file);
+    if (!mimeType) { fail('Ce fichier n\'est pas une vidéo. Choisis une vidéo.'); return; }
+    err.classList.remove('show');
+    fname.textContent = file.name + ' · ' + (file.size / 1048576).toFixed(1) + ' Mo';
+    setProgress(0, file.size || 1);
+    show('progress');
+    let url;
+    try { url = await startSession(file, mimeType); }
+    catch (e) { fail('Impossible de démarrer l\'envoi. Vérifie ta connexion et réessaie.'); return; }
+
+    let start = 0;
+    while (start < file.size) {
+      const end = Math.min(start + CHUNK, file.size);
+      let tries = 0, result;
+      while (true) {
+        try { result = await putChunk(url, file, start, end, mimeType); break; }
+        catch (e) {
+          if (++tries >= 4) { fail('La connexion a coupé pendant l\'envoi. Réessaie quand ta connexion est meilleure.'); return; }
+          await new Promise(r => setTimeout(r, 2000 * tries));
+        }
+      }
+      start = end;
+      setProgress(start, file.size);
+      if (result === 'done') break;
+    }
+    show('done');
+  }
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files && fileInput.files[0];
+    fileInput.value = '';
+    if (file) upload(file);
+  });
+  $('again-btn').addEventListener('click', () => { show('pick'); });
+  window.addEventListener('beforeunload', (e) => {
+    if (stepProgress.classList.contains('show')) { e.preventDefault(); e.returnValue = ''; }
+  });
+})();
+</script>
+</body>
+</html>
